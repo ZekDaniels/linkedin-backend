@@ -1,11 +1,20 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { from, Observable } from 'rxjs';
+import { Repository } from 'typeorm';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { Post } from '../models/post.entity';
+import { IPost } from '../models/post.interface';
 
 @Injectable()
 export class FeedService {
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+
+  constructor(@InjectRepository(Post) private readonly postRepository: Repository<Post>) { }
+
+
+  create(ipost: IPost): Observable<IPost> {
+    return from(this.postRepository.save(ipost));
   }
 
   findAll() {

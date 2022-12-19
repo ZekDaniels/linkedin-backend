@@ -10,14 +10,16 @@ import {
 import { FeedService } from '../services/feed.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { IPost } from '../models/post.interface';
+import { Observable } from 'rxjs';
 
 @Controller('feed')
 export class FeedController {
-  constructor(private readonly feedService: FeedService) {}
+  constructor(private readonly feedService: FeedService) { }
 
   @Post()
-  create(@Body() createFeedDto: CreatePostDto) {
-    return this.feedService.create(createFeedDto);
+  create(@Body() ipost: IPost): Observable<IPost> {
+    return this.feedService.create(ipost);
   }
 
   @Get()
