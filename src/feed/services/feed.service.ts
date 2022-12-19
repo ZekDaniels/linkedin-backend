@@ -19,6 +19,14 @@ export class FeedService {
     return from(this.postRepository.find());
   }
 
+  findSelected(take = 10, skip = 0): Observable<IPost[]> {
+    return from(
+      this.postRepository.findAndCount({ take, skip }).then(([posts]) => {
+        return <IPost[]>posts;
+      }),
+    );
+  }
+
   findOne(id: number): Observable<IPost> {
     return from(
       this.postRepository.findOne({
