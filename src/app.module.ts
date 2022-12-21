@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FeedModule } from './feed/feed.module';
-import { UserModule } from './auth/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { UserModule } from './auth/user.module';
       synchronize: true,
     }),
     FeedModule,
-    UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
