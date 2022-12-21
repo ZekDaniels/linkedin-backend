@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FeedModule } from './feed/feed.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { FeedModule } from './feed/feed.module';
       synchronize: true,
     }),
     FeedModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],
