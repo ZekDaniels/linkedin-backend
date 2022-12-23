@@ -9,21 +9,22 @@ import {
   Query,
 } from '@nestjs/common';
 import { FeedService } from '../services/feed.service';
-import { IPost } from '../models/post.interface';
-import { Observable } from 'rxjs';
 import { DeleteResult } from 'typeorm';
+import { PostEntity } from '../models/post.entity';
+import { CreatePostDto } from '../dto/create-post.dto';
+import { UpdatePostDto } from '../dto/update-post.dto';
 
 @Controller('feed')
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @Post()
-  create(@Body() ipost: IPost): Observable<IPost> {
-    return this.feedService.create(ipost);
+  create(@Body() createPostDto: CreatePostDto): Promise<PostEntity> {
+    return this.feedService.create(createPostDto);
   }
 
   @Get()
-  findAll(): Observable<IPost[]> {
+  findAll(): Promise<PostEntity[]> {
     return this.feedService.findAll();
   }
 
@@ -31,23 +32,26 @@ export class FeedController {
   findSelected(
     @Query('take') take = 1,
     @Query('skip') skip = 1,
-  ): Observable<IPost[]> {
+  ): Promise<PostEntity[]> {
     take = take > 20 ? 20 : take;
     return this.feedService.findSelected(take, skip);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Observable<IPost> {
-    return this.feedService.findOne(+id);
+  findOne(@Param('id') id: string): Promise<PostEntity> {
+    return this.feedService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() ipost: IPost): Observable<IPost> {
-    return this.feedService.update(+id, ipost);
+  update(
+    @Param('id') id: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ): Promise<PostEntity> {
+    return this.feedService.update(id, updatePostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Observable<DeleteResult> {
-    return this.feedService.remove(+id);
+  remove(@Param('id') id: string): Promise<DeleteResult> {
+    return this.feedService.remove(id);
   }
 }

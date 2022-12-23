@@ -1,17 +1,27 @@
 import { User } from 'src/auth/models/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-@Entity()
-export class Post {
-  @PrimaryGeneratedColumn()
-  id: number;
+@Entity({ name: 'linkedin_post' })
+export class PostEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ default: '' })
   body: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 
-  @ManyToOne(() => User, (author) => author.posts)
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
+
+  @ManyToOne(() => User, (author) => author.posts, { onDelete: 'CASCADE' })
   author: User;
 }

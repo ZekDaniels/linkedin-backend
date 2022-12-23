@@ -1,50 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, Observable } from 'rxjs';
 import { DeleteResult, Repository } from 'typeorm';
-import { Post } from '../models/post.entity';
-import { IPost } from '../models/post.interface';
+import { PostEntity } from '../models/post.entity';
+import { CreatePostDto } from '../dto/create-post.dto';
+import { UpdatePostDto } from '../dto/update-post.dto';
 
 @Injectable()
 export class FeedService {
   constructor(
-    @InjectRepository(Post) private readonly postRepository: Repository<Post>,
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
   ) {}
 
-  create(ipost: IPost): Observable<IPost> {
-    return from(this.postRepository.save(ipost));
+  create(createPostDto: CreatePostDto): Promise<PostEntity> {
+    return this.postRepository.save(createPostDto);
   }
 
-  findAll(): Observable<IPost[]> {
-    return from(this.postRepository.find());
+  findAll(): Promise<PostEntity[]> {
+    return this.postRepository.find();
   }
 
-  findSelected(take = 10, skip = 0): Observable<IPost[]> {
-    return from(
-      this.postRepository.findAndCount({ take, skip }).then(([posts]) => {
-        return <IPost[]>posts;
-      }),
-    );
+  findSelected(take = 10, skip = 0): Promise<PostEntity[]> {
+    return this.postRepository.findAndCount({ take, skip }).then(([posts]) => {
+      return <PostEntity[]>posts;
+    });
   }
 
-  findOne(id: number): Observable<IPost> {
-    return from(
-      this.postRepository.findOne({
-        where: { id },
-      }),
-    );
+  findOne(id: string): Promise<PostEntity> {
+    return this.postRepository.findOne({
+      where: { id },
+    });
   }
 
-  update(id: number, ipost: IPost): Observable<IPost> {
-    this.postRepository.update(id, ipost);
-    return from(
-      this.postRepository.findOne({
-        where: { id },
-      }),
-    );
+  update(id: string, updatePostDto: UpdatePostDto): Promise<PostEntity> {
+    this.postRepository.update(id, updatePostDto);
+    return this.postRepository.findOne({
+      where: { id },
+    });
   }
 
-  remove(id: number): Observable<DeleteResult> {
-    return from(this.postRepository.delete(id));
+  remove(id: string): Promise<DeleteResult> {
+    return this.postRepository.delete(id);
   }
 }
