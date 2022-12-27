@@ -10,10 +10,9 @@ async function bootstrap() {
     .setTitle('Linkedin Backend')
     .setDescription('Linkedin Backend API description')
     .setVersion('1.0')
-    .addTag('linkedin')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swg/api', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(3000);
 }

@@ -13,45 +13,71 @@ import { DeleteResult } from 'typeorm';
 import { PostEntity } from '../models/post.entity';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import {
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnprocessableEntityResponse,
+} from '@nestjs/swagger';
 
+@ApiTags('feed')
 @Controller('feed')
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
+  @ApiOperation({ summary: 'Create post' })
+  @ApiCreatedResponse({ description: 'Post created successfully.' })
+  @ApiUnprocessableEntityResponse({ description: 'Post title already exists.' })
   @Post()
-  create(@Body() createPostDto: CreatePostDto): Promise<PostEntity> {
-    return this.feedService.create(createPostDto);
+  async create(@Body() createPostDto: CreatePostDto): Promise<PostEntity> {
+    return await this.feedService.create(createPostDto);
   }
 
+  @ApiOperation({ summary: 'Retrieve all posts' })
+  @ApiOkResponse({ description: 'Posts retrieved successfully.' })
   @Get()
-  findAll(): Promise<PostEntity[]> {
-    return this.feedService.findAll();
+  async findAll(): Promise<PostEntity[]> {
+    return await this.feedService.findAll();
   }
 
+  @ApiOperation({ summary: 'Retrieve paginated posts' })
+  @ApiOkResponse({ description: 'Posts retrieved successfully.' })
   @Get('select')
-  findSelected(
+  async findSelected(
     @Query('take') take = 1,
     @Query('skip') skip = 1,
   ): Promise<PostEntity[]> {
     take = take > 20 ? 20 : take;
-    return this.feedService.findSelected(take, skip);
+    return await this.feedService.findSelected(take, skip);
   }
 
+  @ApiOperation({ summary: 'Retrieve a post' })
+  @ApiOkResponse({ description: 'Post retrieved successfully.' })
+  @ApiNotFoundResponse({ description: 'Post not found.' })
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<PostEntity> {
-    return this.feedService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<PostEntity> {
+    return await this.feedService.findOne(id);
   }
 
+  @ApiOperation({ summary: 'Update a post' })
+  @ApiOkResponse({ description: 'Post updated successfully.' })
+  @ApiNotFoundResponse({ description: 'Post not found.' })
+  @ApiUnprocessableEntityResponse({ description: 'Post body already exists.' })
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updatePostDto: UpdatePostDto,
   ): Promise<PostEntity> {
-    return this.feedService.update(id, updatePostDto);
+    return await this.feedService.update(id, updatePostDto);
   }
 
+  @ApiOperation({ summary: 'Delete a post' })
+  @ApiOkResponse({ description: 'Post deleted successfully.' })
+  @ApiNotFoundResponse({ description: 'Post not found.' })
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<DeleteResult> {
-    return this.feedService.remove(id);
+  async remove(@Param('id') id: string): Promise<DeleteResult> {
+    return await this.feedService.remove(id);
   }
 }
