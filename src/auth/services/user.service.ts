@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 import { User } from '../models/user.entity';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -22,9 +23,7 @@ export class UserService {
     else return post;
   }
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = await this.userRepository.save(createUserDto);
-    user.hashPassword();
-    return await this.userRepository.save(user);
+    return await this.userRepository.save(plainToClass(User, createUserDto));
   }
 
   async findAll(): Promise<User[]> {

@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -39,6 +40,7 @@ export class User {
   @OneToMany(() => PostEntity, (post) => post.author)
   posts: PostEntity[];
 
+  @BeforeInsert()
   hashPassword() {
     this.password = bcrypt.hashSync(this.password, 8);
   }
