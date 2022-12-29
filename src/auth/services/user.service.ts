@@ -22,7 +22,9 @@ export class UserService {
     else return post;
   }
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return await this.userRepository.save(createUserDto);
+    const user = await this.userRepository.save(createUserDto);
+    user.hashPassword();
+    return await this.userRepository.save(user);
   }
 
   async findAll(): Promise<User[]> {

@@ -28,7 +28,7 @@ export class UserController {
 
   @ApiOperation({ summary: 'Create user' })
   @ApiCreatedResponse({ description: 'User created successfully.' })
-  @ApiUnprocessableEntityResponse({ description: 'User title already exists.' })
+  @ApiUnprocessableEntityResponse({ description: 'User email already exists.' })
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.userService.create(createUserDto);
@@ -54,7 +54,7 @@ export class UserController {
   @ApiOperation({ summary: 'Update a user' })
   @ApiOkResponse({ description: 'User updated successfully.' })
   @ApiNotFoundResponse({ description: 'User not found.' })
-  @ApiUnprocessableEntityResponse({ description: 'User body already exists.' })
+  @ApiUnprocessableEntityResponse({ description: 'User email already exists.' })
   @Patch(':id')
   async update(
     @Param('id') id: string,
