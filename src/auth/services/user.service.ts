@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,14 +15,24 @@ export class UserService {
   ) {}
 
   async doesUserExists(id: string): Promise<User> {
-    const post = await this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { id },
     });
 
-    if (!post) throw new NotFoundException('The post does not exist');
-    else return post;
+    if (!user) throw new NotFoundException('The user does not exist');
+    else return user;
   }
+
+  async doesEmailUnique(email: string): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (user) throw new BadRequestException('The email already exist');
+  }
+  
   async create(createUserDto: CreateUserDto): Promise<User> {
+    await this.doesEmailUnique(createUserDto.email);
     return await this.userRepository.save(plainToClass(User, createUserDto));
   }
 
@@ -36,6 +46,7 @@ export class UserService {
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     await this.doesUserExists(id);
+    await this.doesEmailUnique(updateUserDto.email);
     return await this.userRepository.save({ id: id, ...updateUserDto });
   }
 
