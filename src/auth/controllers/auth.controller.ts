@@ -5,14 +5,16 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import {
   ApiCreatedResponse,
   ApiOperation,
+  ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
-export class UserController {
+export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({ summary: 'Create user' })
+  @ApiOperation({ summary: 'Signup user' })
   @ApiCreatedResponse({ description: 'Sign up completed successfully.' })
   @ApiUnprocessableEntityResponse({ description: 'User email already exists.' })
   @Post('register')
